@@ -62,12 +62,14 @@ class Context {
 
   private parseRole(role: string): EUserRole {
     switch (role) {
+      case EUserRole.SYSTEM:
+        return EUserRole.SYSTEM;
       case EUserRole.ADMIN:
         return EUserRole.ADMIN;
       case EUserRole.USER:
         return EUserRole.USER;
       default:
-        return EUserRole.GUEST;
+        throw ErrorHandler.forbidden("Invalid or unrecognized user role.");
     }
   }
 
@@ -113,7 +115,19 @@ class Context {
           };
 
           return { userRuntime };
-        });
+        })
+        .macro("RoleGuard", (roles: EUserRole[]) => ({
+          beforeHandle({ userRuntime }) {
+            if (!userRuntime) {
+              throw ErrorHandler.unauthorized("Authentication required.");
+            }
+            if (!roles.includes(userRuntime.session.role)) {
+              throw ErrorHandler.forbidden(
+                "You do not have permission to access this resource.",
+              );
+            }
+          },
+        }));
   }
 }
 

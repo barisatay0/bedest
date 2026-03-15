@@ -30,43 +30,6 @@ export const RouterUser = new Elysia({
       ),
     },
   )
-  .get(
-    "/",
-    async ({ userRuntime }) => {
-      const res = await ServiceUser.getAll(userRuntime);
-      return UtilRouter.defResponse(res);
-    },
-    {
-      response: UtilRouter.defSchema(
-        t.Array(
-          t.Object({
-            name: SString,
-            role: t.Enum(EUserRole),
-            createdAt: t.Date(),
-          }),
-        ),
-      ),
-    },
-  )
-  .post(
-    "/",
-    async ({ body, userRuntime }) => {
-      const res = await ServiceUser.create(userRuntime, body);
-      return UtilRouter.defResponse(res);
-    },
-    {
-      body: t.Object({
-        name: SString,
-        phone: SString,
-        email: SString,
-        role: t.Enum(EUserRole),
-        password: t.String({ minLength: 6 }),
-        planStart: t.Date(),
-        planEnd: t.Date(),
-      }),
-      response: UtilRouter.defSchema(t.Object({ id: SId })),
-    },
-  )
   .put(
     "/:id",
     async ({ params, body, userRuntime }) => {
@@ -81,14 +44,58 @@ export const RouterUser = new Elysia({
       }),
     },
   )
-  .delete(
-    "/:id",
-    async ({ params, userRuntime }) => {
-      return ServiceUser.remove(userRuntime, params.id);
-    },
+  .guard(
     {
-      params: t.Object({
-        id: SId,
-      }),
+      RoleGuard: [EUserRole.ADMIN, EUserRole.SYSTEM],
     },
+    (app) =>
+      app
+        .get(
+          "/",
+          async ({ userRuntime }) => {
+            const res = await ServiceUser.getAll(userRuntime);
+            return UtilRouter.defResponse(res);
+          },
+          {
+            response: UtilRouter.defSchema(
+              t.Array(
+                t.Object({
+                  name: SString,
+                  role: t.Enum(EUserRole),
+                  createdAt: t.Date(),
+                }),
+              ),
+            ),
+          },
+        )
+        .post(
+          "/",
+          async ({ body, userRuntime }) => {
+            const res = await ServiceUser.create(userRuntime, body);
+            return UtilRouter.defResponse(res);
+          },
+          {
+            body: t.Object({
+              name: SString,
+              phone: SString,
+              email: SString,
+              role: t.Enum(EUserRole),
+              password: t.String({ minLength: 6 }),
+              planStart: t.Date(),
+              planEnd: t.Date(),
+            }),
+            response: UtilRouter.defSchema(t.Object({ id: SId })),
+          },
+        )
+        .delete(
+          "/:id",
+          async ({ params, userRuntime }) => {
+            return ServiceUser.remove(userRuntime, params.id);
+          },
+          {
+            params: t.Object({
+              id: SId,
+            }),
+          },
+        ),
   );

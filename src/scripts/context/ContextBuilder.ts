@@ -22,7 +22,7 @@ class ContextBuilder {
       session: {
         userId: EXAMPLE_UUID,
         sessionId: EXAMPLE_UUID,
-        role: "USER" as EUserRole,
+        role: EUserRole.SYSTEM,
       },
     };
 

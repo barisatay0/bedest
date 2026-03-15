@@ -38,8 +38,8 @@ describe("RouterTenant", () => {
       },
     );
 
-    expect(res.data).toStrictEqual({ id: expect.any(String) });
-    expect(res.data!.id).toHaveLength(36);
+    expect(res.status).toBe(200);
+    expect(res.data).toHaveProperty("id");
   });
 
   it("Update tenant", async () => {

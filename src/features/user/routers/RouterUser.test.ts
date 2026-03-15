@@ -52,12 +52,12 @@ describe("RouterUser", () => {
       {
         createdAt: expect.any(Date),
         name: "Test User",
-        role: "USER" as EUserRole,
+        role: EUserRole.ADMIN,
       },
       {
         createdAt: expect.any(Date),
         name: "List User",
-        role: "USER" as EUserRole,
+        role: EUserRole.USER,
       },
     ]);
   });
@@ -110,7 +110,7 @@ describe("RouterUser", () => {
     expect(updatedRes.data).toStrictEqual({
       createdAt: expect.any(Date),
       name: "Updated User Name",
-      role: EUserRole.USER,
+      role: EUserRole.ADMIN,
     });
   });
 
