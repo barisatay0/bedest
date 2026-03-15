@@ -7,6 +7,7 @@ import ServiceTenant from "../services/ServiceTenant";
 import Context from "@/app/Context";
 import { UtilRouter } from "@/common/utils/UtilRouter";
 import { SEmail } from "@/common/schemas/SEmail";
+import { EUserRole } from "@f/user/enums/EUserRole";
 
 export const RouterTenant = new Elysia({
   prefix: "/tenant",
@@ -37,62 +38,70 @@ export const RouterTenant = new Elysia({
       ),
     },
   )
-  .post(
-    "/",
-    async ({ body, userRuntime }) => {
-      return await ServiceTenant.create(userRuntime, body);
-    },
+
+  .guard(
     {
-      body: t.Object({
-        name: SString,
-        country: SString,
-        phone: SString,
-        email: SString,
-        plan: t.Union([
-          t.Literal(ETenantPlan.BASIC),
-          t.Literal(ETenantPlan.STANDART),
-          t.Literal(ETenantPlan.PROFESSIONAL),
-        ]),
-        planStart: t.Date(),
-        planEnd: t.Date(),
-      }),
+      RoleGuard: [EUserRole.ADMIN, EUserRole.SYSTEM],
     },
-  )
-  .put(
-    "/:id",
-    async ({ body, params, userRuntime }) => {
-      const id = params.id;
-      return await ServiceTenant.update(userRuntime, id, body);
-    },
-    {
-      params: t.Object({
-        id: SId,
-      }),
-      body: t.Object({
-        name: t.Optional(SString),
-        country: t.Optional(SString),
-        phone: t.Optional(SString),
-        email: t.Optional(SString),
-        plan: t.Optional(
-          t.Union([
-            t.Literal(ETenantPlan.BASIC),
-            t.Literal(ETenantPlan.STANDART),
-            t.Literal(ETenantPlan.PROFESSIONAL),
-          ]),
+    (app) =>
+      app
+        .post(
+          "/",
+          async ({ body, userRuntime }) => {
+            return await ServiceTenant.create(userRuntime, body);
+          },
+          {
+            body: t.Object({
+              name: SString,
+              country: SString,
+              phone: SString,
+              email: SString,
+              plan: t.Union([
+                t.Literal(ETenantPlan.BASIC),
+                t.Literal(ETenantPlan.STANDART),
+                t.Literal(ETenantPlan.PROFESSIONAL),
+              ]),
+              planStart: t.Date(),
+              planEnd: t.Date(),
+            }),
+          },
+        )
+        .put(
+          "/:id",
+          async ({ body, params, userRuntime }) => {
+            const id = params.id;
+            return await ServiceTenant.update(userRuntime, id, body);
+          },
+          {
+            params: t.Object({
+              id: SId,
+            }),
+            body: t.Object({
+              name: t.Optional(SString),
+              country: t.Optional(SString),
+              phone: t.Optional(SString),
+              email: t.Optional(SString),
+              plan: t.Optional(
+                t.Union([
+                  t.Literal(ETenantPlan.BASIC),
+                  t.Literal(ETenantPlan.STANDART),
+                  t.Literal(ETenantPlan.PROFESSIONAL),
+                ]),
+              ),
+              planStart: t.Optional(t.Date()),
+              planEnd: t.Optional(t.Date()),
+            }),
+          },
+        )
+        .delete(
+          "/:id",
+          async ({ params, userRuntime }) => {
+            return await ServiceTenant.remove(userRuntime, params.id);
+          },
+          {
+            params: t.Object({
+              id: SId,
+            }),
+          },
         ),
-        planStart: t.Optional(t.Date()),
-        planEnd: t.Optional(t.Date()),
-      }),
-    },
-  )
-  .delete(
-    "/:id",
-    async ({ params, userRuntime }) => {
-      return await ServiceTenant.remove(userRuntime, params.id);
-    },
-    {
-      params: t.Object({
-        id: SId,
-      }),
-    },
   );

@@ -71,9 +71,12 @@ describe("RouterAuth", () => {
   it("Logout successfully", async () => {
     const headers = await testHeaders();
 
-    const res = await logoutApi.auth.logout.post(null, {
-      headers,
-    });
+    const res = await logoutApi.auth.logout.post(
+      {},
+      {
+        headers,
+      },
+    );
 
     expect(res.status).toBe(200);
 

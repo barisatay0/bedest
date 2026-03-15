@@ -7,8 +7,7 @@ export const RouterLogout = new Elysia({ prefix: "/auth", tags: ["Auth"] })
   .post(
     "/logout",
     async ({ userRuntime, cookie }) => {
-      const c = userRuntime;
-      await ServiceAuth.logout(c);
+      await ServiceAuth.logout(userRuntime);
       cookie.accessToken.remove();
       cookie.refreshToken.remove();
       return;

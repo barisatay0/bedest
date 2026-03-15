@@ -31,7 +31,7 @@ export async function MockData() {
     name: EXAMPLE_USER_NAME,
     email: EXAMPLE_EMAIL,
     password: EXAMPLE_USER_PASSWORD,
-    role: EUserRole.USER,
+    role: EUserRole.ADMIN,
   });
 
   await ServiceExample.create(MockUserContext, {
