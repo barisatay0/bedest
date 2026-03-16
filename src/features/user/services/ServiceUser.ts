@@ -2,6 +2,7 @@ import { EUserRole } from "../enums/EUserRole";
 import { IUserApp } from "../../../common/interfaces/IContextApp";
 import { TbUser } from "../tables/TbUser";
 import { ServiceBase } from "../../base/services/ServiceBase";
+import ErrorHandler from "@/infrastructure/error/ErrorHandler";
 
 class ServiceUser extends ServiceBase<typeof TbUser, string> {
   constructor() {
@@ -19,14 +20,33 @@ class ServiceUser extends ServiceBase<typeof TbUser, string> {
   ) {
     const hash = await Bun.password.hash(data.password);
 
+    const userR = c.session.role;
+    const targetR = data.role;
+
+    if (targetR === EUserRole.SYSTEM && userR !== EUserRole.SYSTEM) {
+      throw ErrorHandler.forbidden(
+        "You are not authorized to create a system user",
+      );
+    }
+
+    if (
+      targetR === EUserRole.ADMIN &&
+      userR !== EUserRole.ADMIN &&
+      userR !== EUserRole.SYSTEM
+    ) {
+      throw ErrorHandler.forbidden(
+        "You are not authorized to create an admin user",
+      );
+    }
+
     return super.create(c, {
       ...data,
       password: hash,
     });
   }
 
-  async getAll(c: IUserApp) {
-    return super.getAll(c, {
+  async getAll(c: IUserApp, query: { limit: number; page: number }) {
+    return super.getAll(c, query, {
       name: TbUser.name,
       role: TbUser.role,
       createdAt: TbUser.createdAt,

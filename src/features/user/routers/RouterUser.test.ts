@@ -17,8 +17,6 @@ describe("RouterUser", () => {
         email: "newuser@example.com",
         role: EUserRole.USER,
         password: "securepassword",
-        planStart: new Date(),
-        planEnd: new Date(),
       },
       { headers },
     );
@@ -37,14 +35,13 @@ describe("RouterUser", () => {
         email: "listuser@example.com",
         role: EUserRole.USER,
         password: "securepassword",
-        planStart: new Date(),
-        planEnd: new Date(),
       },
       { headers },
     );
 
     const res = await api.user.get({
       headers,
+      query: { page: 1, limit: 100 },
     });
 
     expect(res.status).toBe(200);
@@ -52,7 +49,7 @@ describe("RouterUser", () => {
       {
         createdAt: expect.any(Date),
         name: "Test User",
-        role: EUserRole.ADMIN,
+        role: EUserRole.SYSTEM,
       },
       {
         createdAt: expect.any(Date),
@@ -72,8 +69,6 @@ describe("RouterUser", () => {
         email: "getuser@example.com",
         role: EUserRole.ADMIN,
         password: "securepassword",
-        planStart: new Date(),
-        planEnd: new Date(),
       },
       { headers },
     );
@@ -110,7 +105,7 @@ describe("RouterUser", () => {
     expect(updatedRes.data).toStrictEqual({
       createdAt: expect.any(Date),
       name: "Updated User Name",
-      role: EUserRole.ADMIN,
+      role: EUserRole.SYSTEM,
     });
   });
 
@@ -124,8 +119,6 @@ describe("RouterUser", () => {
         email: "deleteuser@example.com",
         role: EUserRole.USER,
         password: "securepassword",
-        planStart: new Date(),
-        planEnd: new Date(),
       },
       { headers },
     );
