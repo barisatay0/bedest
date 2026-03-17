@@ -44,7 +44,8 @@ class DbManager {
         migrationsFolder: "drizzle",
       });
     } catch (e) {
-      void e;
+      // eslint-disable-next-line no-console
+      console.error("🔥 Database Migration Failed:", e);
       process.exit(1);
     }
   }
