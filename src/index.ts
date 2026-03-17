@@ -20,7 +20,6 @@ export const app = new Elysia()
   .use(GlobalErrorHandler)
   .get("/favicon.ico", () => Bun.file("public/favicon.ico"))
   .use(Router)
-  .get("", () => "Hello Elysia")
   .listen(env.PORT);
 
 // eslint-disable-next-line no-console
