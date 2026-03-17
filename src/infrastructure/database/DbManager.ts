@@ -37,6 +37,7 @@ class DbManager {
     });
 
     this.db = drizzle(this.pool);
+
   }
 
   get() {
