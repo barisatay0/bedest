@@ -59,14 +59,12 @@ export const RouterUser = new Elysia({
           },
           {
             query: VQuery,
-            response: UtilRouter.defSchema(
-              t.Array(
-                t.Object({
-                  name: VString,
-                  role: t.Enum(EUserRole),
-                  createdAt: t.Date(),
-                }),
-              ),
+            response: UtilRouter.defPaginatedSchema(
+              t.Object({
+                name: VString,
+                role: t.Enum(EUserRole),
+                createdAt: t.Date(),
+              }),
             ),
           },
         )

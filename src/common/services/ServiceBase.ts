@@ -5,6 +5,7 @@ import {
   type SQL,
   type InferInsertModel,
   type InferSelectModel,
+  count,
 } from "drizzle-orm";
 import {
   PgTable,
@@ -65,18 +66,39 @@ export abstract class ServiceBase<
     c: TContext,
     query: { limit: number; page: number },
     columns: TSelection,
-  ): Promise<Prettify<InferSelectModel<TTable>>[]> {
+  ): Promise<{
+    data: Prettify<InferSelectModel<TTable>>[];
+    meta: { total: number; page: number; limit: number; totalPages: number };
+  }> {
     const offset = (query.page - 1) * query.limit;
+    const filters = this.getFilters();
+
+    const [totalRes] = await c.db
+      .select({ count: count() })
+      .from(this.table as unknown as PgTable)
+      .where(and(...filters));
+
+    const total = Number(totalRes.count);
 
     const dbQuery = c.db
       .select(columns)
       .from(this.table as unknown as PgTable)
-      .where(and(...this.getFilters()))
+      .where(and(...filters))
       .$dynamic();
 
-    return (await dbQuery.limit(query.limit).offset(offset)) as Prettify<
+    const data = (await dbQuery.limit(query.limit).offset(offset)) as Prettify<
       InferSelectModel<TTable>
     >[];
+
+    return {
+      data,
+      meta: {
+        total,
+        page: query.page,
+        limit: query.limit,
+        totalPages: Math.ceil(total / query.limit),
+      },
+    };
   }
 
   async getById<TSelection extends SelectedFields>(

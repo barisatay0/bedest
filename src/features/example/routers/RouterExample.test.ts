@@ -38,7 +38,7 @@ describe("RouterExample", () => {
     });
 
     expect(res.status).toBe(200);
-    expect(res.data).toStrictEqual([
+    expect(res.data!.data).toStrictEqual([
       {
         exampleColumn: "Example Column",
         otherExampleColumn: "Other Example Column",

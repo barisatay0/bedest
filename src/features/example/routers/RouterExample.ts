@@ -45,13 +45,11 @@ export const RouterExample = new Elysia({
     },
     {
       query: VQuery,
-      response: UtilRouter.defSchema(
-        t.Array(
-          t.Object({
-            exampleColumn: VString,
-            otherExampleColumn: VString,
-          }),
-        ),
+      response: UtilRouter.defPaginatedSchema(
+        t.Object({
+          exampleColumn: VString,
+          otherExampleColumn: VString,
+        }),
       ),
     },
   )
