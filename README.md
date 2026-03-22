@@ -50,7 +50,7 @@ Stop wrestling with configurations and focus on shipping your business logic.
 
 ### Local Development Setup
 
-1. **Clone or Create the repository:**
+1. **Create or Clone  the repository:**
 
 ```bash
 bun create barisatay0/bedest my-app
@@ -60,7 +60,7 @@ bun i
 or 
 
 ```bash
-git clone git@github.com:your-username/bedest.git my-app
+git clone git@github.com:barisatay0/bedest.git my-app
 cd my-app
 bun install
 ````
