@@ -118,14 +118,12 @@ export const RouterTenant = new Elysia({
           },
           {
             query: VQuery,
-            response: UtilRouter.defSchema(
-              t.Array(
-                t.Object({
-                  name: VString,
-                  country: VString,
-                  email: VEmail,
-                }),
-              ),
+            response: UtilRouter.defPaginatedSchema(
+              t.Object({
+                name: VString,
+                country: VString,
+                email: VEmail,
+              }),
             ),
           },
         ),

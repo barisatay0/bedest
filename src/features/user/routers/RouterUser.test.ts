@@ -45,7 +45,7 @@ describe("RouterUser", () => {
     });
 
     expect(res.status).toBe(200);
-    expect(res.data!).toStrictEqual([
+    expect(res.data!.data).toStrictEqual([
       {
         createdAt: expect.any(Date),
         name: "Test User",
