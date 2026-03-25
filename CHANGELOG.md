@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/bedest-hq/bedest/compare/v1.0.1...v1.0.2) (2026-03-25)
+
+
+### Bug Fixes
+
+* forgotten tenant plan guard implementation. ([#27](https://github.com/bedest-hq/bedest/issues/27)) ([83f70c5](https://github.com/bedest-hq/bedest/commit/83f70c503258cfe342ddcf1e3fa8254a12a57af8))
+
 ## [1.0.1](https://github.com/bedest-hq/bedest/compare/v1.0.0...v1.0.1) (2026-03-23)
 
 
