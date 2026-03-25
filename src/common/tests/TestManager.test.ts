@@ -126,6 +126,8 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   const datetimeNow = new Date();
+  const datetimeNextYear = new Date();
+  datetimeNextYear.setFullYear(datetimeNow.getFullYear() + 1);
 
   const [insertedTenant] = await test_db
     .insert(STenant)
@@ -136,7 +138,7 @@ beforeEach(async () => {
       phone: "05555555555",
       plan: ETenantPlan.PROFESSIONAL,
       planStart: datetimeNow,
-      planEnd: datetimeNow,
+      planEnd: datetimeNextYear,
     })
     .returning();
 
