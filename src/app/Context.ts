@@ -7,6 +7,9 @@ import { EUserRole } from "../features/user/enums/EUserRole";
 import ErrorHandler from "@/infrastructure/error/ErrorHandler";
 import DbManager from "@/infrastructure/database/DbManager";
 import EnvManager from "@/infrastructure/env/EnvManager";
+import { STenant } from "@f/tenant/schemas/STenant";
+import { eq } from "drizzle-orm";
+import { ETenantPlan } from "@f/tenant/enums/ETenantPlan";
 
 class Context {
   private env = EnvManager.get();
@@ -124,6 +127,38 @@ class Context {
             if (!roles.includes(userRuntime.session.role)) {
               throw ErrorHandler.forbidden(
                 "You do not have permission to access this resource.",
+              );
+            }
+          },
+        }))
+        .macro("PlanGuard", (plans: ETenantPlan[]) => ({
+          async beforeHandle({ userRuntime }) {
+            if (!userRuntime) {
+              throw ErrorHandler.unauthorized("Authentication required.");
+            }
+
+            const [tenant] = await userRuntime.db
+              .select({
+                plan: STenant.plan,
+                planEnd: STenant.planEnd,
+              })
+              .from(STenant)
+              .where(eq(STenant.id, userRuntime.tenantId))
+              .limit(1);
+
+            if (!tenant) {
+              throw ErrorHandler.notFound("Tenant not found.");
+            }
+
+            if (tenant.planEnd < userRuntime.nowDatetime) {
+              throw ErrorHandler.planNotActive(
+                "Your plan has expired. Please renew to continue.",
+              );
+            }
+
+            if (!plans.includes(tenant.plan)) {
+              throw ErrorHandler.planNotEnabled(
+                "Your current plan does not support this feature. Please upgrade.",
               );
             }
           },
